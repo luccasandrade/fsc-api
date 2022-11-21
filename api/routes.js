@@ -24,24 +24,29 @@ router.post("/likes", async (ctx) => {
 		where: { tweetId: ctx.request.body.tweetId }
 	})
 	console.log("🚀 ~ tweets", tweets)
+	let hasLiked = false
 	tweets.map((tweet) => {
 		console.log("🚀 ~ tweet", tweet)
 		if (tweet.userId === ctx.request.body.userId) {
 			console.log('já deu like')
+			hasLiked = true
 			return
 		}
 	})
-	try {
-		const like = await prisma.like.create({
-			data: {
-				userId: ctx.request.body.userId,
-				tweetId: ctx.request.body.tweetId,
-			},
-		});
-		return ctx.status = 200
-	} catch (error) {
-		console.log('erro: ' + error)
-		return;
+	if (!hasLiked) {
+
+		try {
+			const like = await prisma.like.create({
+				data: {
+					userId: ctx.request.body.userId,
+					tweetId: ctx.request.body.tweetId,
+				},
+			});
+			return ctx.status = 200
+		} catch (error) {
+			console.log('erro: ' + error)
+			return;
+		}
 	}
 });
 
