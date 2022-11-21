@@ -12,6 +12,15 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
+model Like {
+  userId String
+  tweetId String
+
+  user User @relation(fields: [userId], references: [id])
+  tweet Tweet @relation(fields: [tweetId], references: [id])
+  @@id([userId, tweetId])
+}
+
 model User {
   id  String @id @default(cuid())
   name String
@@ -20,14 +29,17 @@ model User {
   password String
 
   tweets Tweet[]
+  likes Like[]
 }
 
 model Tweet {
   id String @id @default(cuid())
   userId String
   text String
+  likes Like[]
 
   user User @relation(fields: [userId], references: [id])
+
 
   @@index([userId])
 }
