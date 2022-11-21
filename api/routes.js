@@ -20,16 +20,15 @@ router.get("/likes", async (ctx) => {
 })
 
 router.post("/likes", async (ctx) => {
-	const user = await prisma.like.findFirst({
-		where: { userId: ctx.request.body.userId }
-	})
-	const tweet = await prisma.like.findFirst({
+	const tweets = await prisma.like.findMany({
 		where: { tweetId: ctx.request.body.tweetId }
 	})
-
-	if (user && tweet) {
-		return
-	}
+	tweets.map((tweet) => {
+		if (tweet.userId === ctx.request.body.userId) {
+			console.log('já deu like')
+			return
+		}
+	})
 	try {
 		const like = await prisma.like.create({
 			data: {
