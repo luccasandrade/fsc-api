@@ -23,7 +23,9 @@ router.post("/likes", async (ctx) => {
 	const tweets = await prisma.like.findMany({
 		where: { tweetId: ctx.request.body.tweetId }
 	})
+	console.log("🚀 ~ tweets", tweets)
 	tweets.map((tweet) => {
+		console.log("🚀 ~ tweet", tweet)
 		if (tweet.userId === ctx.request.body.userId) {
 			console.log('já deu like')
 			return
