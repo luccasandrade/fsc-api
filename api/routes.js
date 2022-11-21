@@ -6,6 +6,44 @@ export const router = new Router();
 
 const prisma = new PrismaClient();
 
+router.get("/likes", async (ctx) => {
+	try {
+		const likes = await prisma.like.findMany()
+		ctx.body = likes
+		return
+	}
+	catch (error) {
+		console.log("!!" + error)
+		return
+	}
+
+})
+
+router.post("/likes", async (ctx) => {
+	const user = await prisma.like.findFirst({
+		where: { userId: ctx.request.body.userId }
+	})
+	const tweet = await prisma.like.findFirst({
+		where: { tweetId: ctx.request.body.tweetId }
+	})
+
+	if (user && tweet) {
+		return
+	}
+	try {
+		const like = await prisma.like.create({
+			data: {
+				userId: ctx.request.body.userId,
+				tweetId: ctx.request.body.tweetId,
+			},
+		});
+		return ctx.status = 200
+	} catch (error) {
+		console.log('erro: ' + error)
+		return;
+	}
+});
+
 router.get("/tweets", async (ctx) => {
 	const [, token] = ctx.request.headers.authorization.split(" ") || [];
 

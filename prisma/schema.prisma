@@ -13,13 +13,13 @@ datasource db {
 }
 
 model Like {
-  userId String
+  id Int @id @default(autoincrement())
   tweetId String
-
-  user User @relation(fields: [userId], references: [id])
+  userId String
   tweet Tweet @relation(fields: [tweetId], references: [id])
-  @@id([userId, tweetId])
-}
+  user User @relation(fields: [userId], references: [id])
+  @@index([tweetId])
+} 
 
 model User {
   id  String @id @default(cuid())
@@ -27,19 +27,17 @@ model User {
   email String @unique
   username String @unique
   password String
+  like Like[]
 
   tweets Tweet[]
-  likes Like[]
 }
 
 model Tweet {
   id String @id @default(cuid())
   userId String
   text String
-  likes Like[]
-
   user User @relation(fields: [userId], references: [id])
 
-
+  like Like[]
   @@index([userId])
 }
