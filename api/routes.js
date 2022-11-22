@@ -20,7 +20,6 @@ router.get("/likes", async (ctx) => {
 })
 
 router.post("/likes", async (ctx) => {
-	console.log("🚀 ~ ctx.request.body.tweetId", ctx.request.body.tweetId)
 	const tweets = await prisma.like.findMany({
 		where: { tweetId: ctx.request.body.tweetId }
 	})
@@ -30,17 +29,12 @@ router.post("/likes", async (ctx) => {
 	let hasLiked
 
 	tweets.map((tweet) => {
-		console.log("🚀 ~ ctx.request.body.userId", ctx.request.body.userId)
-		console.log("🚀 ~ tweet.userId", tweet.userId)
-
 		if (tweet.userId === ctx.request.body.userId) {
 			hasLiked = true
 			delLikeId = tweet.id
-			console.log("🚀 ~ hasLiked", hasLiked)
 			return
 		} else {
 			hasLiked = false
-			console.log("🚀 ~ hasLiked", hasLiked)
 		}
 	})
 
