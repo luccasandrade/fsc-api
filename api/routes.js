@@ -31,7 +31,7 @@ router.post("/likes", async (ctx) => {
 	tweets.map((tweet) => {
 		if (tweet.userId === ctx.request.body.userId) {
 			hasLiked = true
-			delLikeId = tweet.id
+			delLikeId = parseInt(tweet.id)
 			return
 		} else {
 			hasLiked = false
@@ -57,7 +57,7 @@ router.post("/likes", async (ctx) => {
 		console.log('entrou no delete')
 		const deleteLike = await prisma.like.delete({
 			where: {
-				id: parseInt(delLikeId),
+				id: delLikeId,
 			},
 		})
 		hasLiked = false
