@@ -31,7 +31,7 @@ router.post("/likes", async (ctx) => {
 	tweets.map((tweet) => {
 		if (tweet.userId === ctx.request.body.userId) {
 			hasLiked = true
-			delLikeId = parseInt(tweet.id)
+			delLikeId = tweet.id
 			return
 		} else {
 			hasLiked = false
