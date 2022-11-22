@@ -20,22 +20,34 @@ router.get("/likes", async (ctx) => {
 })
 
 router.post("/likes", async (ctx) => {
+	console.log("🚀 ~ ctx.request.body.tweetId", ctx.request.body.tweetId)
 	const tweets = await prisma.like.findMany({
 		where: { tweetId: ctx.request.body.tweetId }
 	})
 	console.log("🚀 ~ tweets", tweets)
-	let hasLiked = false
+
+	let delLikeId
+	let hasLiked
+
 	tweets.map((tweet) => {
-		console.log("🚀 ~ tweet", tweet)
+		console.log("🚀 ~ ctx.request.body.userId", ctx.request.body.userId)
+		console.log("🚀 ~ tweet.userId", tweet.userId)
+
 		if (tweet.userId === ctx.request.body.userId) {
-			console.log('já deu like')
 			hasLiked = true
+			delLikeId = tweet.id
+			console.log("🚀 ~ hasLiked", hasLiked)
 			return
+		} else {
+			hasLiked = false
+			console.log("🚀 ~ hasLiked", hasLiked)
 		}
 	})
+
 	if (!hasLiked) {
 
 		try {
+			console.log("criou")
 			const like = await prisma.like.create({
 				data: {
 					userId: ctx.request.body.userId,
@@ -47,6 +59,15 @@ router.post("/likes", async (ctx) => {
 			console.log('erro: ' + error)
 			return;
 		}
+	} else {
+		console.log('entrou no delete')
+		const deleteLike = await prisma.like.delete({
+			where: {
+				id: parseInt(delLikeId),
+			},
+		})
+		hasLiked = false
+		return ctx.status = 200
 	}
 });
 
